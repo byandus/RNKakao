@@ -6,8 +6,8 @@
 //  Copyright © 2017년 byandus. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "RCTBridgeModule.h"
+#import <KakaoOpenSDK/KakaoOpenSDK.h>
+#import <React/RCTBridgeModule.h>
 
 @interface RNKakao : NSObject <RCTBridgeModule>
 

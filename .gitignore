@@ -58,3 +58,7 @@ node_modules
 /coverage
 /third-party
 yarn.lock
+
+
+#npm
+npm-debug.log

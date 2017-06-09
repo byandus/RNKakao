@@ -7,73 +7,57 @@
 //
 
 #import "RNKakao.h"
-#import <KakaoOpenSDK/KaKaoOpenSDK.h>
 
 @implementation RNKakao
 
 RCT_EXPORT_MODULE();
 
+
+- (NSDictionary *)constantsToExport
+{
+    return @{ @"KOAuthTypeTalk" : @(KOAuthTypeTalk),
+              @"KOAuthTypeAccount" : @(KOAuthTypeAccount) };
+};
+
+
+
+/**
+ Login or Signup
+ @param authTypes array consists in KOAuthType.
+ */
+
 RCT_REMAP_METHOD(login,
+                 authTypes: (NSArray* )authTypes
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject)
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [[KOSession sharedSession] close];
         [[KOSession sharedSession] openWithCompletionHandler:^(NSError *error) {
-            //        if(error) {
-            //            reject(@"kakao login error", @"not login", error);
-            //            return;
-            //        }
+            NSLog(@"MYLOG: openWithCompletionHandler");
             
+            if(error) {
+                NSLog(@"Error: %@", error.description);
+                NSLog(@"%@", error.description);
+                
+                reject(@"RNKakao", @"login error", error);
+                return;
+            }
             
             if ([[KOSession sharedSession] isOpen]) {
-                [self loginProcessResolve:resolve
-                                 rejecter:reject];
+                NSLog(@"sharedSession is open");
+                
+                [self userInfoRequestResolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject];
+                return;
             } else {
-                // failed
-                NSLog(@"login cancel.");
-                //NSError *error = [NSError errorWithDomain:@"kakaologin" code:1 userInfo:nil];
-                reject(@"KAKAO_LOGIN_CANCEL", @"CANCEL", nil);
+                reject(@"RNKakao", @"login canceled", nil);
+                return;
             }
-        }];
+        } authParams:nil authTypes:(authTypes != nil) ? authTypes : @[@(KOAuthTypeTalk), @(KOAuthTypeStory), @(KOAuthTypeAccount)]];
     });
 }
 
-- (void)loginProcessResolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject
-{
-    // login success
-    NSLog(@"access toeken %@",[KOSession sharedSession].accessToken);
-    NSLog(@"login succeeded.");
-    
-    
-    [KOSessionTask  meTaskWithCompletionHandler :^(KOUser* result, NSError *error) {
-        
-        if (result) {
-            // success
-            NSLog(@"userId=%@", result.ID);
-            NSLog(@"nickName=%@", [result propertyForKey:@"nickname"]);
-            NSLog(@"profileImage=%@", [result propertyForKey:@"profile_image"]);
-            
-            NSDictionary *userSession = @{
-                                          @"accessToken": [KOSession sharedSession].accessToken,
-                                          @"id": result.ID,
-                                          @"nickname": [result propertyForKey:@"nickname"],
-                                          // water0126
-                                          @"profile_image": [result propertyForKey:@"profile_image"] != nil ? [result propertyForKey:@"profile_image"] : @""
-                                          };
-            //resolve(userSession);
-            NSLog(@"successs.................");
-            resolve(userSession);
-            return;
-            
-        } else {
-            NSLog(@"login failed.");
-            //                    NSError *error = [NSError errorWithDomain:@"kakaologin" code:2 userInfo:nil];
-            reject(@"KAKAO_LOGIN_FAIL", @"FAIL", nil);
-        }
-        
-    }];
-}
+
 
 RCT_REMAP_METHOD(logout,
                  resolver1:(RCTPromiseResolveBlock)resolve

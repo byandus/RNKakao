@@ -1,0 +1,27 @@
+{
+	"name": "RNKakao",
+	"version": "0.0.1",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/byandus/RNKakao.git"
+	},
+	"author": "byandus <byandus@naver.com”>",
+	"license": "MIT",
+	"bugs": {
+    	"url": "https://github.com/byandus/RNKakao/issues"
+  	},
+  	"homepage": "https://github.com/byandus/RNKakao#readme",
+	"dependencies": {
+		"react": "16.0.0-alpha.6",
+		"react-native": "0.44.0"
+	},
+	
+	"devDependencies": {
+		"babel-cli": "^6.24.1",
+    	"babel-preset-flow": "^6.23.0"
+	}
+}

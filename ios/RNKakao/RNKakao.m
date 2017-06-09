@@ -71,32 +71,21 @@ RCT_REMAP_METHOD(userInfo,
     [KOSessionTask meTaskWithCompletionHandler:^(KOUser* result, NSError *error) {
         if (result) {
             // success
-            
+
             NSNumber *id = result.ID;
-            NSString *nickName = [result propertyForKey:KOUserNicknamePropertyKey];
-            NSString *email = [result propertyForKey:KOUserEmailPropertyKey];
-            NSString *profileImage = [result propertyForKey:KOUserProfileImagePropertyKey];
-            NSString *profileImageThumnail = [result propertyForKey:KOUserThumbnailImagePropertyKey];
+            NSString *nickName = [result propertyForKey:@"nickname"];
+            NSString *email = [result propertyForKey:@"email"];
+            NSString *profileImage = [result propertyForKey:@"profile_image"];
+            
             
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:id forKey:@"id"];
+            [userInfo setValue:nickName forKey:@"nickname"];
+            [userInfo setValue:email forKey:@"email"];
+            [userInfo setValue:profileImage forKey:@"profile_image"];
             [userInfo setValue:[KOSession sharedSession].accessToken forKey:@"accessToken"];
             
-            if (nickName != nil) {
-                [userInfo setValue:nickName forKey:@"nickName"];
-            }
-            
-            if (email != nil) {
-                [userInfo setValue:email forKey:@"email"];
-            }
-            
-            if (profileImage != nil) {
-                [userInfo setValue:profileImage forKey:@"profileImage"];
-            }
-            
-            if (profileImageThumnail != nil) {
-                [userInfo setValue:profileImageThumnail forKey:@"profileImageThumnail"];
-            }
+
             
             resolve(userInfo);
         } else {
